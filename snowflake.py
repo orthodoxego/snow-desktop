@@ -24,32 +24,27 @@ class SnowFlake:
         self.x = randint(-SnowFlake.WIDTH, SnowFlake.WIDTH * 2)
         self.y = randint(-SnowFlake.HEIGHT, -50)
 
-        self.angle = 2
+        self.angle = randint(1, 3)
 
         self.image = pygame.image.load(SnowFlake.image_files[randint(0, len(SnowFlake.image_files) - 1)])
         scale = SnowFlake.HEIGHT / SnowFlake.WIDTH
         self.image = pygame.transform.scale(self.image, (self.image.get_width() * scale,
                                                          self.image.get_height() * scale))
 
-        self.accel_y = randint(int(SnowFlake.HEIGHT // 400 * self.image.get_height()),
-                               int(SnowFlake.HEIGHT // 200 * self.image.get_height()))
+        # Вероятность низкой скорости у больших снежинок выше
+        self.accel_y = randint(int(SnowFlake.HEIGHT // 5 * 1 / self.image.get_height()),
+                               int(SnowFlake.HEIGHT // 2 * 3 / self.image.get_height()))
 
         self.width_rotate = self.image.get_width() // 2
         self.height_rotate = self.image.get_height() // 2
         self.change_angle = randint(3, 48)
 
-        self.enable = True
-
     def act(self, deltatime):
         if self.y > SnowFlake.HEIGHT:
             return
 
-        self.x += SnowFlake.wind * deltatime
+        self.x += SnowFlake.wind * (1 / self.width_rotate) * deltatime
         self.y += self.accel_y * deltatime
-
-        if (self.x < 0 - self.width_rotate and SnowFlake.wind < 0 or
-            self.x > SnowFlake.WIDTH) and SnowFlake.wind > 0:
-            self.enable = False
 
         self.angle += self.change_angle * deltatime
         if self.angle > 360:
@@ -70,7 +65,7 @@ class SnowFlake:
     def wind_of_change(deltatime, pos):
         scroll = ((SnowFlake.WIDTH // 2 - pos.x) * -1)
         SnowFlake.wind += scroll * deltatime
-        if SnowFlake.wind < -300:
-            SnowFlake.wind = -300
-        elif SnowFlake.wind > 300:
-            SnowFlake.wind = 300
+        if SnowFlake.wind < -SnowFlake.WIDTH / 2:
+            SnowFlake.wind = -SnowFlake.WIDTH / 2
+        elif SnowFlake.wind > SnowFlake.WIDTH / 2:
+            SnowFlake.wind = SnowFlake.WIDTH / 2
