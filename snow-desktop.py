@@ -21,6 +21,7 @@ pygame.init()
 scene = pygame.display.set_mode((0, 0),
                                 pygame.NOFRAME,
                                 pygame.FULLSCREEN)
+pygame.display.set_caption("Snow Desktop")
 
 SnowFlake.WIDTH = pygame.display.Info().current_w
 SnowFlake.HEIGHT = pygame.display.Info().current_h
@@ -38,7 +39,9 @@ win32gui.SetWindowLong(hwnd, win32con.GWL_EXSTYLE,
 win32gui.SetLayeredWindowAttributes(hwnd, win32api.RGB(*transparency), 0, win32con.LWA_COLORKEY)
 user32 = ctypes.WinDLL("user32")
 user32.SetWindowPos.restype = wintypes.HWND
-user32.SetWindowPos.argtypes = [wintypes.HWND, wintypes.HWND, wintypes.INT, wintypes.INT, wintypes.INT, wintypes.INT, wintypes.UINT]
+user32.SetWindowPos.argtypes = [wintypes.HWND, wintypes.HWND,
+                                wintypes.INT, wintypes.INT,
+                                wintypes.INT, wintypes.INT, wintypes.UINT]
 user32.SetWindowPos(hwnd, -1, 0, 0, 0, 0, 0x0001)
 # =============================
 playgame = True
