@@ -9,15 +9,15 @@ class SnowFlake:
 
     SNOW = pygame.image.load("images/snow.png")
 
-    image_files = ["images/snowflake01.png",
-                   "images/snowflake02.png",
-                   "images/snowflake03.png",
-                   "images/snowflake04.png",
-                   "images/snowflake05.png",
-                   "images/snowflake06.png",
-                   "images/snowflake07.png",
-                   "images/snowflake08.png",
-                   "images/snowflake09.png"]
+    image_files = [pygame.image.load("images/snowflake01.png"),
+                   pygame.image.load("images/snowflake02.png"),
+                   pygame.image.load("images/snowflake03.png"),
+                   pygame.image.load("images/snowflake04.png"),
+                   pygame.image.load("images/snowflake05.png"),
+                   pygame.image.load("images/snowflake06.png"),
+                   pygame.image.load("images/snowflake07.png"),
+                   pygame.image.load("images/snowflake08.png"),
+                   pygame.image.load("images/snowflake09.png")]
     wind = None
 
     def __init__(self):
@@ -26,10 +26,11 @@ class SnowFlake:
 
         self.angle = randint(1, 3)
 
-        self.image = pygame.image.load(SnowFlake.image_files[randint(0, len(SnowFlake.image_files) - 1)])
+        self.image = SnowFlake.image_files[randint(0, len(SnowFlake.image_files) - 1)]
         scale = SnowFlake.HEIGHT / SnowFlake.WIDTH
         self.image = pygame.transform.scale(self.image, (self.image.get_width() * scale,
                                                          self.image.get_height() * scale))
+        self.rect = self.image.get_rect()
 
         # Вероятность низкой скорости у больших снежинок выше
         self.accel_y = randint(int(SnowFlake.HEIGHT // 5 * 1 / self.image.get_height()),
@@ -58,8 +59,15 @@ class SnowFlake:
             return
 
         rotated_image = pygame.transform.rotate(self.image, -self.angle)
-        new_rect = rotated_image.get_rect(center=self.image.get_rect(topleft=(self.x, self.y)).center)
-        scene.blit(rotated_image, new_rect)
+        self.rect = rotated_image.get_rect(center=self.image.get_rect(topleft=(self.x, self.y)).center)
+        scene.blit(rotated_image, self.rect)
+
+        self.rect.x -= 20
+        self.rect.y -= 20
+        self.rect.width += 40
+        self.rect.height += 40
+
+        #pygame.draw.rect(scene, (255, 255, 255), (self.rect.x, self.rect.y, self.rect.width, self.rect.height), 0)
 
     @staticmethod
     def wind_of_change(deltatime, pos):

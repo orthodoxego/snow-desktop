@@ -13,9 +13,12 @@ import win32con
 import win32gui
 
 from snowdrift import SnowDrift
+from snowexplose import SnowExplose
 from snowflake import SnowFlake
 from random import randint
 from ctypes import wintypes
+
+from sounds import Sounds
 
 pygame.init()
 scene = pygame.display.set_mode((0, 0),
@@ -29,7 +32,7 @@ SnowFlake.HEIGHT = pygame.display.Info().current_h
 clock = pygame.time.Clock()
 
 # Зелёный хромакей
-transparency = (0, 255, 0)
+transparency = (0, 0, 0)
 
 # =============================
 # Прозрачное окно на весь экран и на передний план
@@ -48,12 +51,17 @@ playgame = True
 FPS = 60                    # Изменить, чтобы увеличить/уменьшить ФПС
 deltatime = 0               # Синхронизация движения с частотой кадров
 flakes_list = []            # Снежинки
+snow_exploses_list = []      # Эффекты при клике на снежинку
 max_count_flakes = 800      # Уменьшить, если тормозит
 frame = 0
 # =============================
 
 SnowFlake.wind = randint(int(-SnowFlake.WIDTH * 0.05), int(SnowFlake.WIDTH * 0.05))
 snowdrift = SnowDrift()
+
+sounds = Sounds()
+
+# snow_exploses_list.append(SnowExplose(SnowFlake.WIDTH // 2, SnowFlake.HEIGHT // 2, sounds))
 
 for i in range(int(max_count_flakes * 0.75)):
     flakes_list.append(SnowFlake())
@@ -65,6 +73,15 @@ while playgame:
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_ESCAPE:
                 playgame = False
+        elif event.type == pygame.MOUSEBUTTONDOWN:
+            x, y = pygame.mouse.get_pos()
+            for flake in flakes_list:
+                if flake.rect.collidepoint(x, y):
+                    snow_exploses_list.append(SnowExplose(x, y, sounds))
+                    flakes_list.remove(flake)
+                    flakes_list.append(SnowFlake())
+                    break
+
 
     scene.fill(transparency)
 
@@ -72,6 +89,9 @@ while playgame:
     for flake in flakes_list:
         flake.draw(scene)
         flake.act(deltatime)
+
+    for snow_exploses in snow_exploses_list:
+        snow_exploses.draw(scene)
 
         # Удаляем из списка, когда вышла за нижнюю границу экрана
         if flake.y > SnowFlake.HEIGHT:
@@ -87,6 +107,11 @@ while playgame:
         snowdrift.up(deltatime)
 
     pygame.display.update()
+
+    for snow_exploses in snow_exploses_list:
+        snow_exploses.act(deltatime)
+        if not snow_exploses.enabled:
+            snow_exploses_list.remove(snow_exploses)
 
     # Контроль позиции курсора мыши и изменение ветра
     if frame % 5 == 0:
