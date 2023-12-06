@@ -51,7 +51,7 @@ class SnowExplose:
                 x=x + randint(5, 10) * sin(i * 45),
                 y=y + randint(5, 10) * cos(i * 45),
                 img=choice(SnowExplose.image_files), # SnowExplose.image_files[i],
-                vector_x=SnowExplose.vx[i] * randint(2,4),
+                vector_x=SnowExplose.vx[i] * randint(2,4) + randint(-100, 100),
                 vector_y=SnowExplose.vy[i] * randint(2,4)
             ))
 
@@ -60,7 +60,7 @@ class SnowExplose:
                 x=x + randint(15, 30) * sin(i * 45),
                 y=y + randint(15, 30) * cos(i * 45),
                 img=choice(SnowExplose.image_files), # SnowExplose.image_files[i],
-                vector_x=SnowExplose.vx[i] * randint(4,6),
+                vector_x=SnowExplose.vx[i] * randint(4,6) + randint(-100, 100),
                 vector_y=SnowExplose.vy[i] * randint(1,5)
             ))
 
@@ -97,5 +97,9 @@ class SnowExplose:
             pict.x += pict.vector_x * deltatime
             pict.y += pict.vector_y * deltatime
 
-        if self.img_list[9].y > SnowFlake.HEIGHT:
+            if pict.y + 20 > SnowFlake.HEIGHT:
+                pict.vector_y *= -0.5
+                pict.y += pict.vector_y * deltatime
+
+        if self.img_list[9].y > SnowFlake.HEIGHT - 30 and abs(self.img_list[9].vector_y) < 250:
             self.enabled = False

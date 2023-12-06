@@ -4,6 +4,7 @@
 # pip install pywin32
 # pip install pyautogui
 
+
 import ctypes
 
 import pyautogui
@@ -17,7 +18,7 @@ from font.font import Font
 from snowdrift import SnowDrift
 from snowexplose import SnowExplose
 from snowflake import SnowFlake
-from random import randint
+from random import randint, choice
 from ctypes import wintypes
 
 from sounds import Sounds
@@ -66,7 +67,6 @@ max_count_flakes = 800      # Уменьшить, если тормозит
 count_fire = 0              # Количество сбитых снежинок
 score = 0                   # Текущие сбитые снежинки в секунду
 tm = time.time()
-print(tm)
 frame = 0
 font = Font()
 # =============================
@@ -82,6 +82,12 @@ for i in range(int(max_count_flakes * 0.75)):
     flakes_list.append(SnowFlake())
 
 while playgame:
+    # if frame % 5 == 0:
+    #     flk = choice(flakes_list)
+    #     if flk.x > 0 and flk.y > 0 and flk.x < SnowFlake.WIDTH and flk.y < SnowFlake.HEIGHT:
+    #         snow_exploses_list.append(SnowExplose(flk.x, flk.y, sounds))
+
+
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             playgame = False
@@ -141,9 +147,5 @@ while playgame:
     deltatime = clock.tick(FPS) / 1000
     frame += 1
 
-    if len(flakes_list) != 600:
-        print(len(flakes_list))
-
-print(score, record)
 with open("record.dat", "w", encoding="UTF-8") as f:
     f.write(str(max(score, record)))
