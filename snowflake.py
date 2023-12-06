@@ -39,6 +39,7 @@ class SnowFlake:
         self.width_rotate = self.image.get_width() // 2
         self.height_rotate = self.image.get_height() // 2
         self.change_angle = randint(3, 48)
+        self.circle_radius = SnowFlake.WIDTH * scale // 256
 
     def act(self, deltatime):
         if self.y > SnowFlake.HEIGHT:
@@ -62,10 +63,8 @@ class SnowFlake:
         self.rect = rotated_image.get_rect(center=self.image.get_rect(topleft=(self.x, self.y)).center)
         scene.blit(rotated_image, self.rect)
 
-        self.rect.x -= 20
-        self.rect.y -= 20
-        self.rect.width += 40
-        self.rect.height += 40
+        # pygame.draw.circle(scene, (219, 236, 255), (self.rect.center), self.circle_radius)
+        pygame.draw.circle(scene, (239, 246, 255), (self.rect.center), self.circle_radius)
 
         #pygame.draw.rect(scene, (255, 255, 255), (self.rect.x, self.rect.y, self.rect.width, self.rect.height), 0)
 

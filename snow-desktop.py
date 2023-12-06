@@ -12,6 +12,8 @@ import win32api
 import win32con
 import win32gui
 
+import time
+from font.font import Font
 from snowdrift import SnowDrift
 from snowexplose import SnowExplose
 from snowflake import SnowFlake
@@ -19,6 +21,14 @@ from random import randint
 from ctypes import wintypes
 
 from sounds import Sounds
+
+try:
+    with open("record.dat", "r", encoding="UTF-8") as f:
+        record = float(f.readline())
+except FileNotFoundError:
+    record = 0
+except ValueError:
+    record = 0
 
 pygame.init()
 scene = pygame.display.set_mode((0, 0),
@@ -31,7 +41,7 @@ SnowFlake.HEIGHT = pygame.display.Info().current_h
 
 clock = pygame.time.Clock()
 
-# Зелёный хромакей
+# Хромакей
 transparency = (0, 0, 0)
 
 # =============================
@@ -51,9 +61,14 @@ playgame = True
 FPS = 60                    # Изменить, чтобы увеличить/уменьшить ФПС
 deltatime = 0               # Синхронизация движения с частотой кадров
 flakes_list = []            # Снежинки
-snow_exploses_list = []      # Эффекты при клике на снежинку
+snow_exploses_list = []     # Эффекты при клике на снежинку
 max_count_flakes = 800      # Уменьшить, если тормозит
+count_fire = 0              # Количество сбитых снежинок
+score = 0                   # Текущие сбитые снежинки в секунду
+tm = time.time()
+print(tm)
 frame = 0
+font = Font()
 # =============================
 
 SnowFlake.wind = randint(int(-SnowFlake.WIDTH * 0.05), int(SnowFlake.WIDTH * 0.05))
@@ -80,8 +95,12 @@ while playgame:
                     snow_exploses_list.append(SnowExplose(x, y, sounds))
                     flakes_list.remove(flake)
                     flakes_list.append(SnowFlake())
-                    break
 
+                    count_fire += 1
+                    all_time = int(time.time() - tm)
+                    if all_time > 30:
+                        score = round(count_fire / (all_time / 60), 1)
+                    break
 
     scene.fill(transparency)
 
@@ -90,14 +109,15 @@ while playgame:
         flake.draw(scene)
         flake.act(deltatime)
 
-    for snow_exploses in snow_exploses_list:
-        snow_exploses.draw(scene)
-
         # Удаляем из списка, когда вышла за нижнюю границу экрана
-        if flake.y > SnowFlake.HEIGHT:
+        if flake.y > SnowFlake.HEIGHT or flake.x < -SnowFlake.WIDTH // 2 or flake.x > SnowFlake.WIDTH * 1.5:
             flakes_list.remove(flake)
             if len(flakes_list) < max_count_flakes:
                 flakes_list.append(SnowFlake())
+
+    for snow_exploses in snow_exploses_list:
+        snow_exploses.draw(scene)
+
 
     # Отрисовка "сугробов"
     snowdrift.draw(scene)
@@ -106,6 +126,7 @@ while playgame:
     if frame % 5 == 0:
         snowdrift.up(deltatime)
 
+    font.draw(scene, record, score)
     pygame.display.update()
 
     for snow_exploses in snow_exploses_list:
@@ -119,3 +140,10 @@ while playgame:
 
     deltatime = clock.tick(FPS) / 1000
     frame += 1
+
+    if len(flakes_list) != 600:
+        print(len(flakes_list))
+
+print(score, record)
+with open("record.dat", "w", encoding="UTF-8") as f:
+    f.write(str(max(score, record)))
