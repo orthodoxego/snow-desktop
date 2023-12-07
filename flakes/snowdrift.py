@@ -17,6 +17,5 @@ class SnowDrift:
         if self.y < SnowFlake.HEIGHT - self.image.get_height():
             return False
         self.y -= 3 * deltatime
-        print(self.y)
         return True
 
