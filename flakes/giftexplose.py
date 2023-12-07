@@ -8,8 +8,9 @@ from flakes.snowflake import SnowFlake
     Класс для обработки эффектов при клике на подарок. Содержит в себе все изображения
     разлетающихся подарков.
 """
-class GiftExplose:
 
+
+class GiftExplose:
     # Вектора движения для изображений вокруг координат клика
     vx = [0, 60, 75, 0, -75, -60, -30]
     vy = [-130, -200, -150, -220, -150, -200, -100]
@@ -52,7 +53,6 @@ class GiftExplose:
                 scene.blit(rotated_image, pict.rect)
             count += 1
 
-
     def act(self, deltatime):
         if not self.enabled:
             return
@@ -63,16 +63,16 @@ class GiftExplose:
             if abs(pict.vector_x) > 0.1:
                 pict.vector_x *= 0.99999
                 if pict.angle > 0:
-                    pict.angle += pict.vector_x * deltatime * 4
+                    pict.angle += pict.vector_x * deltatime * 2
                 else:
-                    pict.angle -= -pict.vector_x * deltatime * 4
+                    pict.angle -= -pict.vector_x * deltatime * 2
 
-            pict.vector_y += SnowFlake.HEIGHT * 0.65 * deltatime
+            pict.vector_y += SnowFlake.HEIGHT * 0.45 * deltatime
 
             pict.x += pict.vector_x * deltatime
-            pict.y += pict.vector_y * deltatime
+            pict.y += pict.vector_y * deltatime // 3
 
-            over_screen &= pict.vector_y > SnowFlake.HEIGHT
+            over_screen &= pict.y > SnowFlake.HEIGHT
 
             # if pict.y > SnowFlake.HEIGHT - pict.img.get_height():
             #     pict.vector_y *= -0.5
