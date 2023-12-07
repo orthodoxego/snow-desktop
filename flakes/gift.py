@@ -17,8 +17,8 @@ class Gift:
 
         self.image = Gift.image
         scale = SnowFlake.HEIGHT / SnowFlake.WIDTH
-        self.image = pygame.transform.scale(self.image, (self.image.get_width() * scale,
-                                                         self.image.get_height() * scale))
+        self.image = pygame.transform.scale(self.image, (self.image.get_width() * scale / 2,
+                                                         self.image.get_height() * scale / 2))
         self.rect = self.image.get_rect()
 
         # Вероятность низкой скорости у больших подарков выше

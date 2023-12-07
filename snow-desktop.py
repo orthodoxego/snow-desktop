@@ -106,7 +106,7 @@ while playgame:
 
                     count_fire += 1
                     all_time = int(time.time() - tm)
-                    if all_time > 30:
+                    if all_time > 30 and count_fire > 15:
                         score = round(count_fire / (all_time / 60), 1)
 
                         if score > record:
@@ -147,7 +147,7 @@ while playgame:
         snowdrift.up(deltatime)
 
     # Выводить рекорды и текущую скорость если сбитых снежинок > 10
-    if count_fire > 10:
+    if count_fire > 15:
         font.draw(scene, record, score)
 
     pygame.display.update()
