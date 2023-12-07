@@ -2,7 +2,9 @@ import pygame
 
 from flakes.snowflake import SnowFlake
 
-
+"""
+    Класс для хранения и вывода текста на экран.
+"""
 class Font:
 
     def __init__(self):
@@ -14,6 +16,10 @@ class Font:
         self.render_current_score = None
         self.render_current_score_black = None
 
+    """
+    Формирует строки для вывода и проверяет, изменились ли они с предыдущей отрисовки.
+    Если строки изменились, то вызывается перерисовка (if).
+    """
     def draw(self, scene, record, score):
         rt = f"Рекорд: {record} в мин."
         st = f"Текущее: {score if score > 0 else "---"} в мин."

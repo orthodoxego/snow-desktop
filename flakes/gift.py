@@ -2,7 +2,9 @@ from random import randint
 from flakes.snowflake import SnowFlake
 import pygame
 
-
+"""
+    Класс для обработки подарка. Изображение статично для каждого экземпляра с целью экономии памяти.
+"""
 class Gift:
     HEIGHT = None
     WIDTH = None

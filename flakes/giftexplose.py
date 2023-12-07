@@ -4,18 +4,22 @@ from random import randint, choice
 from flakes.exp_xy import ExplXY
 from flakes.snowflake import SnowFlake
 
-
+"""
+    Класс для обработки эффектов при клике на подарок. Содержит в себе все изображения
+    разлетающихся подарков.
+"""
 class GiftExplose:
 
+    # Вектора движения для изображений вокруг координат клика
     vx = [0, 60, 75, 0, -75, -60, -30]
     vy = [-130, -200, -150, -220, -150, -200, -100]
     img = pygame.image.load("images/others/gift.png")
 
     def __init__(self, x, y, sounds):
         sounds.play_gift()
-
         self.frame = 0
 
+        # Изменит размер изображения в соответствии с пропорциями и размером экрана
         w, h = GiftExplose.img.get_width(), GiftExplose.img.get_height()
         scale = (SnowFlake.HEIGHT / SnowFlake.WIDTH) / 4
         current_img = pygame.transform.scale(GiftExplose.img, (w * scale, h * scale))
@@ -34,7 +38,7 @@ class GiftExplose:
 
         self.enabled = True
 
-    def draw(self, scene, deltatime):
+    def draw(self, scene):
         if not self.enabled:
             return
 

@@ -4,7 +4,6 @@
 # pip install pywin32
 # pip install pyautogui
 
-
 import ctypes
 
 import pyautogui
@@ -144,9 +143,9 @@ while playgame:
         if gift.y > SnowFlake.HEIGHT:
             gifts_list.remove(gift)
 
-    # Подарки-эффнкты
+    # Подарки-эффекты
     for gift_exploses in gift_exploses_list:
-        gift_exploses.draw(scene, deltatime)
+        gift_exploses.draw(scene)
 
     for snow_exploses in snow_exploses_list:
         snow_exploses.draw(scene, deltatime)
