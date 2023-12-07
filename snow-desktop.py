@@ -20,10 +20,11 @@ from font.font import Font
 from flakes.snowdrift import SnowDrift
 from flakes.snowexplose import SnowExplose
 from flakes.snowflake import SnowFlake
+from flakes.giftexplose import GiftExplose
 from random import randint
 from ctypes import wintypes
 
-from sounds import Sounds
+from sounds.sounds import Sounds
 
 try:
     with open("record.dat", "r", encoding="UTF-8") as f:
@@ -66,8 +67,9 @@ deltatime = 0               # Синхронизация движения с ч�
 flakes_list = []            # Снежинки
 gifts_list = []             # Подарки
 snow_exploses_list = []     # Эффекты при клике на снежинку
-max_flakes = 300      # Уменьшить, если тормозит
-max_gifts = 3               # Макс. количество подарков на экране
+gift_exploses_list = []     # Эффекты при клике на подарок
+max_flakes = 300            # Уменьшить, если тормозит
+max_gifts = 1               # Макс. количество подарков на экране
 count_fire = 0              # Количество сбитых снежинок
 score = 0                   # Текущие сбитые снежинки в секунду
 tm = time.time()
@@ -98,6 +100,11 @@ while playgame:
                 playgame = False
         elif event.type == pygame.MOUSEBUTTONDOWN:
             x, y = pygame.mouse.get_pos()
+            for gift in gifts_list:
+                if gift.rect.collidepoint(x, y):
+                    gift_exploses_list.append(GiftExplose(x, y, sounds))
+                    gifts_list.remove(gift)
+
             for flake in flakes_list:
                 if flake.rect.collidepoint(x, y):
                     snow_exploses_list.append(SnowExplose(x, y, sounds))
@@ -129,12 +136,17 @@ while playgame:
             if len(flakes_list) < max_flakes:
                 flakes_list.append(SnowFlake())
 
+    # Подарки-цели
     for gift in gifts_list:
         gift.draw(scene)
         gift.act(deltatime)
 
         if gift.y > SnowFlake.HEIGHT:
             gifts_list.remove(gift)
+
+    # Подарки-эффнкты
+    for gift_exploses in gift_exploses_list:
+        gift_exploses.draw(scene, deltatime)
 
     for snow_exploses in snow_exploses_list:
         snow_exploses.draw(scene, deltatime)
@@ -157,6 +169,11 @@ while playgame:
         snow_exploses.act(deltatime)
         if not snow_exploses.enabled:
             snow_exploses_list.remove(snow_exploses)
+
+    for gift_exploses in gift_exploses_list:
+        gift_exploses.act(deltatime)
+        if not gift_exploses.enabled:
+            gift_exploses_list.remove(gift_exploses)
 
     # Контроль позиции курсора мыши и изменение ветра
     if frame % 5 == 0:

@@ -1,19 +1,8 @@
 import pygame
 from math import sin, cos
-from dataclasses import dataclass
 from random import randint, choice
-
+from flakes.exp_xy import ExplXY
 from flakes.snowflake import SnowFlake
-
-
-@dataclass
-class ExplXY:
-    x: float
-    y: float
-    img: pygame.image
-    vector_x: float
-    vector_y: float
-    angle: int
 
 
 class SnowExplose:
@@ -31,7 +20,7 @@ class SnowExplose:
                 pygame.image.load("images/others/expl05.png"),
                 pygame.image.load("images/others/expl06.png")]
 
-        scale = (SnowFlake.HEIGHT / SnowFlake.WIDTH) / 2
+        scale = (SnowFlake.HEIGHT / SnowFlake.WIDTH) / 1.8
 
         for pct in imgs:
             w, h = pct.get_width(), pct.get_height()
@@ -45,7 +34,7 @@ class SnowExplose:
 
         sounds.play_expl()
 
-        self.img_list: ExplXY = []
+        self.img_list = []
         for i in range(6):
             self.img_list.append(ExplXY(
                 x=x + randint(5, 10) * sin(i * 45),
@@ -85,7 +74,6 @@ class SnowExplose:
             return
 
         for pict in self.img_list:
-
 
             if abs(pict.vector_x) > 0.1:
                 pict.vector_x *= 0.999999

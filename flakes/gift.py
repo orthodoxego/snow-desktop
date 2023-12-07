@@ -11,7 +11,8 @@ class Gift:
 
     def __init__(self):
         self.x = randint(0, SnowFlake.WIDTH - 100)
-        self.y = randint(-SnowFlake.HEIGHT, -100)
+        self.y = randint(-300, -100)
+        # self.y = randint(0, SnowFlake.HEIGHT // 2)
 
         self.angle = randint(1, 3)
 
