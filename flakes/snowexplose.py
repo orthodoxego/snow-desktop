@@ -3,7 +3,7 @@ from math import sin, cos
 from dataclasses import dataclass
 from random import randint, choice
 
-from snowflake import SnowFlake
+from flakes.snowflake import SnowFlake
 
 
 @dataclass
@@ -13,13 +13,13 @@ class ExplXY:
     img: pygame.image
     vector_x: float
     vector_y: float
+    angle: int
 
 
 class SnowExplose:
-
     image_files = None
-    vx = [ 0, 60,   75,    0,  -75, -60]
-    vy = [-130, -200, -150, -220, -150,  -200]
+    vx = [0, 60, 75, 0, -75, -60]
+    vy = [-130, -200, -150, -220, -150, -200]
 
     @staticmethod
     def get_images():
@@ -50,29 +50,35 @@ class SnowExplose:
             self.img_list.append(ExplXY(
                 x=x + randint(5, 10) * sin(i * 45),
                 y=y + randint(5, 10) * cos(i * 45),
-                img=choice(SnowExplose.image_files), # SnowExplose.image_files[i],
-                vector_x=SnowExplose.vx[i] * randint(2,4) + randint(-100, 100),
-                vector_y=SnowExplose.vy[i] * randint(2,4)
+                img=choice(SnowExplose.image_files),  # SnowExplose.image_files[i],
+                vector_x=SnowExplose.vx[i] * randint(2, 4) + randint(-100, 100),
+                vector_y=SnowExplose.vy[i] * randint(2, 4),
+                angle=0
             ))
+            self.img_list[i].angle = 30 if self.img_list[i].vector_x > 0 else -30
 
         for i in range(6):
             self.img_list.append(ExplXY(
                 x=x + randint(15, 30) * sin(i * 45),
                 y=y + randint(15, 30) * cos(i * 45),
-                img=choice(SnowExplose.image_files), # SnowExplose.image_files[i],
-                vector_x=SnowExplose.vx[i] * randint(4,6) + randint(-100, 100),
-                vector_y=SnowExplose.vy[i] * randint(1,5)
+                img=choice(SnowExplose.image_files),  # SnowExplose.image_files[i],
+                vector_x=SnowExplose.vx[i] * randint(4, 6) + randint(-100, 100),
+                vector_y=SnowExplose.vy[i] * randint(1, 5),
+                angle=0
             ))
-
+            self.img_list[i].angle = -30 if self.img_list[i].vector_x > 0 else 30
 
         self.enabled = True
 
-    def draw(self, scene):
+    def draw(self, scene, deltatime):
         if not self.enabled:
             return
         for pict in self.img_list:
-            scene.blit(pict.img, (pict.x, pict.y))
+            rotated_image = pygame.transform.rotate(pict.img, -pict.angle)
+            pict.rect = rotated_image.get_rect(center=pict.img.get_rect(topleft=(pict.x, pict.y)).center)
+            scene.blit(rotated_image, pict.rect)
 
+            # scene.blit(pict.img, (pict.x, pict.y))
 
     def act(self, deltatime):
         if not self.enabled:
@@ -80,26 +86,22 @@ class SnowExplose:
 
         for pict in self.img_list:
 
+
             if abs(pict.vector_x) > 0.1:
                 pict.vector_x *= 0.999999
+                if pict.angle > 0:
+                    pict.angle += pict.vector_x * deltatime
+                else:
+                    pict.angle -= -pict.vector_x * deltatime
 
             pict.vector_y += SnowFlake.HEIGHT * 0.65 * deltatime
-
-            # if abs(pict.vector_y) < 20:
-            #     pict.vector_y *= -1
-            #     pict.vector_y += 20
-            # if pict.vector_y < 0:
-            #     pict.vector_y *= 0.98
-            # else:
-            #     if pict.vector_y < 400:
-            #         pict.vector_y *= 1.02
 
             pict.x += pict.vector_x * deltatime
             pict.y += pict.vector_y * deltatime
 
-            if pict.y + 20 > SnowFlake.HEIGHT:
+            if pict.y + pict.img.get_height() > SnowFlake.HEIGHT:
                 pict.vector_y *= -0.5
                 pict.y += pict.vector_y * deltatime
 
-        if self.img_list[9].y > SnowFlake.HEIGHT - 30 and abs(self.img_list[9].vector_y) < 250:
+        if self.img_list[9].y > SnowFlake.HEIGHT - pict.img.get_height() and abs(self.img_list[9].vector_y) < 250:
             self.enabled = False

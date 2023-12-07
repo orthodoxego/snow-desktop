@@ -1,5 +1,5 @@
 import pygame.image
-from snowflake import SnowFlake
+from flakes.snowflake import SnowFlake
 
 
 class SnowDrift:

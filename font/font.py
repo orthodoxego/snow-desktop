@@ -1,6 +1,6 @@
 import pygame
 
-from snowflake import SnowFlake
+from flakes.snowflake import SnowFlake
 
 
 class Font:
