@@ -26,9 +26,11 @@ class Font:
         if self.record_to_screen != rt:
             self.render_record = self.font.render(rt, False, (0, 255, 50))
             self.render_record_black = self.font.render(rt, False, (20, 0, 0))
+            self.record_to_screen = rt
         if self.current_score_to_screen != st:
             self.render_current_score = self.font.render(st, False, (128, 255, 0))
             self.render_current_score_black = self.font.render(st, False, (20, 0, 0))
+            self.current_score_to_screen = st
 
         scene.blit(self.render_record_black, (SnowFlake.WIDTH - 353, 17))
         scene.blit(self.render_record, (SnowFlake.WIDTH - 350, 20))
